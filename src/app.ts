@@ -1,29 +1,55 @@
 import * as express from "express";
 import catRouter from "./cats/router/cat.router";
 
-const app: express.Express = express();
-//* body-parser: json 미들웨어
-app.use(express.json());
+//*싱글턴 패턴 적용
+class Server {
+    public app: express.Application;
+    private PORT = 8000;
 
-//* logging middleware
-app.use((req, res, next) => {
-    // 로깅 미들웨어
-    console.log(req.rawHeaders[0]);
-    next();
-});
+    constructor() {
+        const app: express.Application = express();
+        this.app = app;
+    }
 
-//* catRouter 분리
-app.use(catRouter);
+    private setRoutes() {
+        //* catRouter 분리
+        this.app.use(catRouter);
+    }
 
-//* error handling middleware
-app.use((req, res, next) => {
-    res.send({
-        error: 404,
-    });
-});
+    private setMiddlewares() {
+        //* logging
+        this.app.use((req, res, next) => {
+            // 로깅 미들웨어
+            console.log(req.rawHeaders[0]);
+            next();
+        });
 
-const PORT = 8000;
+        //* json
+        this.app.use(express.json());
 
-app.listen(PORT, () => {
-    console.log(`port : ${PORT}에서 서버가 열림`);
-});
+        //* catRoute
+        this.setRoutes();
+
+        //* error handling
+        this.app.use((req, res, next) => {
+            res.send({
+                error: 404,
+            });
+        });
+    }
+
+    public listen() {
+        this.setMiddlewares();
+
+        this.app.listen(this.PORT, () => {
+            console.log(`port : ${this.PORT}에서 서버가 열림`);
+        });
+    }
+}
+
+function serverInit() {
+    const server = new Server();
+    server.listen();
+}
+
+serverInit();
