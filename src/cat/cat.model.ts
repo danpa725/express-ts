@@ -1,4 +1,4 @@
-import { CatInfo } from "../types/types";
+import { CatInfo } from "./types/types";
 
 export const CatInfos: CatInfo[] = [
     {

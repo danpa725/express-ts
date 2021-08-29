@@ -1,5 +1,5 @@
 import * as express from "express";
-import catRouter from "./cats/router/cat.router";
+import catRouter from "./cats/cat.router";
 
 //*싱글턴 패턴 적용
 class Server {
@@ -11,26 +11,27 @@ class Server {
         this.app = app;
     }
 
-    private setRoutes() {
-        //* catRouter 분리
-        this.app.use(catRouter);
-    }
-
-    private setMiddlewares() {
-        //* logging
+    //* access-logging
+    private setLoggingRoute() {
         this.app.use((req, res, next) => {
             // 로깅 미들웨어
             console.log(req.rawHeaders[0]);
             next();
         });
+    }
 
-        //* json
+    //* json, cors ...
+    private setSystemRoutes() {
         this.app.use(express.json());
+    }
 
-        //* catRoute
-        this.setRoutes();
+    //* Middlewares 분리
+    private setMiddleRoutes() {
+        this.app.use(catRouter);
+    }
 
-        //* error handling
+    //* error handling
+    private setErrHandlingRoute() {
         this.app.use((req, res, next) => {
             res.send({
                 error: 404,
@@ -38,18 +39,30 @@ class Server {
         });
     }
 
-    public listen() {
-        this.setMiddlewares();
+    //* init all routes
+    private initRoutes() {
+        this.setLoggingRoute();
+        this.setSystemRoutes();
 
+        this.setMiddleRoutes();
+
+        this.setErrHandlingRoute();
+    }
+
+    //* init server
+    public init() {
+        this.initRoutes();
+
+        //* boot message
         this.app.listen(this.PORT, () => {
-            console.log(`port : ${this.PORT}에서 서버가 열림`);
+            console.log(`port : ${this.PORT}\n Server open!🎇`);
         });
     }
 }
 
 function serverInit() {
     const server = new Server();
-    server.listen();
+    server.init();
 }
 
 serverInit();

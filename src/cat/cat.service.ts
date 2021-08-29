@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
-import { CatInfo } from "../../types/types";
-import { CatInfos } from "../cat.model";
+import { CatInfo } from "./types/types";
+import { CatInfos } from "./cat.model";
 
 //* Read: 고양이 전체 데이터
 const getAllCataInfos = (req: Request, res: Response) => {
@@ -41,7 +41,7 @@ const getSpecificCatInfo = (req: Request, res: Response) => {
 };
 
 //*Create: 새로운 고양이 추가
-const addNewCatInfo = (req: Request, res: Response) => {
+const createCatInfo = (req: Request, res: Response) => {
     try {
         const catData: CatInfo = req.body;
 
@@ -135,7 +135,7 @@ const deleteCatInfo = (req: Request, res: Response) => {
 export {
     getAllCataInfos,
     getSpecificCatInfo,
-    addNewCatInfo,
+    createCatInfo,
     updateCatInfo,
     patchCatInfo,
     deleteCatInfo,

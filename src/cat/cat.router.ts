@@ -2,7 +2,7 @@ import { Router } from "express";
 
 //* service 로직 분리
 import {
-    addNewCatInfo,
+    createCatInfo,
     deleteCatInfo,
     getAllCataInfos,
     getSpecificCatInfo,
@@ -18,7 +18,7 @@ catRouter.get("/cats", getAllCataInfos);
 catRouter.get("/cats/:id", getSpecificCatInfo);
 
 //* Post
-catRouter.post("/cats", addNewCatInfo);
+catRouter.post("/cats", createCatInfo);
 
 //* Update
 catRouter.put("/cats/:id", updateCatInfo);
